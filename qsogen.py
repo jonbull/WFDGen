@@ -1,9 +1,36 @@
 
-owncall = 'kg7kke'
-owncat = '2o'
+owncall = 'af7xj'
+owncat = '1h'
 ownsec = 'id'
+powermult = 4 #>100w = 1x, <100w = 2x, QRP = 4x
 year = '2021'
 month = '01'
+
+
+qsocount = {'CW':0,
+            'PH':0,
+            'DI':0}
+
+multiplier = set()
+
+bands = {'160m':[1.8, 2],
+    '80m':[3.5, 4],
+    '40m':[7, 7.3],
+    '20m':[14, 14.35],
+    '15m':[21, 21.45],
+    '12m':[24.89, 24.99],
+    '10m':[28, 29.7],
+    '2m':[144, 148],
+    '70cm':[420, 450]
+         }
+
+def findband(freq):
+    khz = freq / 1000
+    qsoband = 'OOB'
+    for currentband in bands.keys():
+        if khz >= bands[currentband][0] and khz <= bands[currentband][1]:
+            qsoband = currentband
+    return qsoband
 
 def padspace(tstring,tlength):
     padding = ''
@@ -60,7 +87,7 @@ def getmode():
     status = False
     while not status:
         status = True
-        mode = input('Enter mode; 1 - Phone, 2 - Digital, 3 - CW: ')
+        mode = input('Enter mode; [1] - Phone, 2 - Digital, 3 - CW: ')
         if mode == '':
             mode = '1'
         if mode.isdigit() and mode in ['1','2','3']:
@@ -138,20 +165,48 @@ if __name__ == '__main__':
         tcall = gettargetcall()
         tcat = gettargetcategory()
         tsec = gettargetsection()
+        print('')
         printrecord(freq, mode, totaldate, time, owncall, owncat, ownsec, tcall, tcat, tsec)
+        if findband(freq) == 'OOB':
+            print(f'Warning - freq {freq} appears out of band')
         stat = inputoption()
         if stat == 'w':
             writerecord(freq, mode, totaldate, time, owncall, owncat, ownsec, tcall, tcat, tsec)
             print("Record written\n")
+            multiplier.add(f'{findband(freq)}+{mode}')
+            qsocount[mode] += 1
         elif stat == 'd':
             print("Record discarded\n")
         elif stat == 'wq':
             writerecord(freq, mode, totaldate, time, owncall, owncat, ownsec, tcall, tcat, tsec)
             print("Record written, will quit\n")
+            multiplier.add(f'{findband(freq)}+{mode}')
+            qsocount[mode] += 1
             stat = 'q'
         elif stat == 'q':
             print("Quiting!\n")
             stat = 'q'
+
+    totalpoints = 0
+    print(f'Points before BONUS:')
+    print(f'PH contacts:  {qsocount["PH"]} @ 1pt each: {qsocount["PH"]}')
+    totalpoints += qsocount["PH"]
+    print(f'CW contacts:  {qsocount["CW"]} @ 2pts each: {qsocount["CW"]*2}')
+    totalpoints += qsocount["CW"] * 2
+    print(f'DI contacts:  {qsocount["DI"]} @ 2pts each: {qsocount["DI"]*2}')
+    totalpoints += qsocount["DI"] * 2
+    print(f'QSO Points Subtotal: {totalpoints}')
+    print(f'Power Multiplier = {powermult}')
+    totalpoints *= powermult
+    print(f'Power Multiplier Subtotal: {totalpoints}')
+    print(f'Bands/Modes Worked: {multiplier} for {len(multiplier)} x QSO Points {totalpoints}')
+    totalpoints *= len(multiplier)
+    print(f'Total Points before BONUS: {totalpoints}')
+    print(f'QSOs count = {qsocount}')
+
+
+
+
 
 
 
