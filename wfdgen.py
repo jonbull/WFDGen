@@ -1,4 +1,8 @@
 debug = 1
+theFile = 'af7xj2024.csv'
+
+if debug == 1:
+    theFile = 'debug.csv'
 
 class qso:
     def __init__(self):
@@ -185,11 +189,6 @@ class qso:
 read in a csv of QSO data
 """
 masterList = []
-
-if debug == 1:
-    theFile = 'debug.csv'
-else:
-    theFile = 'af7xj2024.csv'
 
 theCSV = open(theFile)
 for line in theCSV:
