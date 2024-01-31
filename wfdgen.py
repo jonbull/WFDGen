@@ -1,7 +1,13 @@
-debug = 0
+debug = 1
 
 class qso:
     def __init__(self):
+
+        self.owncall = 'af7xj'
+        self.owncat = '1o'
+        self.ownsec = 'id'
+        self.year = '2024'
+        self.month = '01'
         self.isQRP = 1
 
         self.bands = {'160m': [1800, 2000],
@@ -150,6 +156,31 @@ class qso:
         print("Total Points = "+str(totalPoints))
         print("##############################")
 
+    def padspace(self, tstring, tlength):
+        padding = ''
+        if tlength - len(str(tstring)) > 0:
+            for rep in range(tlength - len(str(tstring))):
+                padding += ' '
+        else:
+            padding = ' '
+        return padding
+    def writerecord(self, freq, mode, totaldate, time, owncall, owncat, ownsec, tcall, tcat, tsec):
+        file = open(f'{self.owncall}-{self.year}.log', "a")
+        file.write(
+            f'QSO: {freq}{self.padspace(freq, 7)}{mode.upper()}{self.padspace(mode, 3)}{totaldate}{self.padspace(totaldate, 11)}{time}{self.padspace(time, 5)}{owncall.upper()}{self.padspace(owncall, 8)}{owncat.upper()}{self.padspace(owncat, 4)}{ownsec.upper()}{self.padspace(ownsec, 4)}{tcall.upper()}{self.padspace(tcall, 8)}{tcat.upper()}{self.padspace(tcat, 4)}{tsec.upper()}\n')
+        file.close
+
+    def generateLog(self):
+        for line in range(len(self.qsoList)):
+            if line+1 not in self.errorBlob.keys():
+                self.writerecord(self.qsoList[line][0], self.qsoList[line][5], self.year+"-"+self.month+"-"+self.qsoList[line][6], self.qsoList[line][4], self.owncall, self.owncat, self.ownsec, self.qsoList[line][1], self.qsoList[line][2], self.qsoList[line][3])
+
+    def errorLog(self):
+        for thiskey in self.errorBlob.keys():
+            print("Line "+str(thiskey)+":")
+            for report in self.errorBlob[thiskey]:
+                print (report)
+
 """
 read in a csv of QSO data
 """
@@ -173,16 +204,5 @@ wfdEntry.validateContact()
 wfdEntry.validateTime()
 wfdEntry.validateDate()
 wfdEntry.genScore()
-
-print(wfdEntry.errorBlob)
-
-"""
-pad function
-"""
-"""
-build output
-"""
-"""
-print nicely formatted error log
-"""
-
+wfdEntry.generateLog()
+wfdEntry.errorLog()
