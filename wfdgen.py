@@ -247,6 +247,12 @@ class LogGen:
         file.close
     def build_log(self):
         for line in self.goodList:
+            if len(line[4]) == 1:
+                line[4] = "000" + line[4]
+            if len(line[4]) < 3:
+                line[4] = "00" + line[4]
+            if len(line[4]) < 4:
+                line[4] = "0" + line[4]
             self.writerecord(line[0], line[5], self.year+"-"+self.month+"-"+line[6], line[4], self.owncall, self.owncat, self.ownsec, line[1], line[2], line[3])
 
 
