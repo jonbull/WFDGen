@@ -14,7 +14,7 @@ Frequency,Callsign,Category,Section,Time,Mode,Date
 
 __config.ini__
 
--No spaces between key, equals sign and value.  (Example file=myfile.csv)
+- No spaces between key, equals sign and value.  (Example file=myfile.csv)
 
 file = Set theFile to the filename of your CSV input  
 owncall = Your callsign  
