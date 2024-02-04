@@ -21,6 +21,7 @@ owncall = Your callsign
 owncat = Your category  
 ownsec = Your section  
 year = The year  
+month = The month  
 isQRP = 0 for no, 1 for yes  
 
 Once the output log is generated, attach the Cabrillo header information and the "END-OF-LOG: " at the end.
