@@ -66,6 +66,12 @@ class ValidateQSO:
         else:
             return False
 
+    def validatecallsign(self, callsign):  # Make sure call sign contains a number.
+        for element in callsign:
+            if element.isdigit():
+                return False
+        return True
+
     def validateclass(self, arrlClass):  # Class provided should be in the class list.
         if self.category.count(arrlClass.upper()) == 0:
             return True
@@ -103,6 +109,8 @@ class ValidateQSO:
             else:
                 if findBand(self.rawlist[line][0]) == "OOB":
                     self.adderrorlog(line + 1, "Check frequency, may be out of band.")
+                if self.validatecallsign(self.rawlist[line][1]):
+                    self.adderrorlog(line + 1, "Check callsign.")
                 if self.validateclass(self.rawlist[line][2][-1]):
                     self.adderrorlog(line + 1, "Check class")
                 if self.validatesection(self.rawlist[line][3]):
